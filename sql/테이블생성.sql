@@ -407,7 +407,7 @@ create sequence PET_NOTE_NOTE_NUM_seq;
 --샘플데이터 of PET_NOTE 
 insert into PET_NOTE (
     NOTE_NUM , USER_ID, PET_NAME, PET_TYPE, PET_GENDER, PET_BIRTH, PET_YN, PET_WEIG, PET_H_CHECK, 
-    PET_H_NAME, PET_H_TEACHER, PET_REASON, PET_STMP, PET_SIGNICE, PET_NEXTDATE, PET_VAC)
+    PET_H_NAME, PET_H_TEACHER, PET_REASON, PET_STMP, PET_SIGNICE,PET_DATE, PET_NEXTDATE, PET_VAC, PET_EDITDATE)
     values(
     PET_NOTE_NOTE_NUM_seq.nextval, 
     'test1', 
@@ -424,8 +424,11 @@ insert into PET_NOTE (
     '안구건조증',
     '수분섭취를 신경써야함',
     '2023-04-01',
-    'P0104'
+    '2023-04-01',
+    'P0104',
+    '2023-04-03'
     );
+
 
 COMMIT;
 --테이블 구조 확인

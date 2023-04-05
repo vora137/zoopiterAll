@@ -3,18 +3,43 @@ package com.project.zoopiter.domain.member.dao;
 import com.project.zoopiter.domain.entity.PetInfo;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PetInfoDAO {
-  // 등록
-  PetInfo saveInfo(PetInfo petInfo);
+  /**등록
+   *
+   * @param petInfo
+   * @return
+   */
+  String saveInfo(PetInfo petInfo);
 
-  // 수정
+  /** 조회
+   *
+   * @param memberId
+   * @return
+   */
+  Optional<PetInfo> findInfo(Long memberId);
+
+  /**수정
+   *
+   * @param PetNum
+   * @param petInfo
+   * @return
+   */
   int updateInfo (Long PetNum, PetInfo petInfo);
 
-  // 삭제
+  /** 삭제
+   *
+   * @param PetNum
+   * @return
+   */
   int deleteInfo(Long PetNum);
-  // 목록
-  List<PetInfo> findInfo();
+
+  /** 목록
+   *
+   * @return
+   */
+  List<PetInfo> findAll();
 
   // 회원유무
 

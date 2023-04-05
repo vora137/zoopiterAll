@@ -1,8 +1,12 @@
 package com.project.zoopiter.domain.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PetInfo {
   private Long petNum;    // Pet ID
   private String userId;    // 회원 ID

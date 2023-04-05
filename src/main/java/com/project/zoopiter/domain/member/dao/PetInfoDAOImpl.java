@@ -32,25 +32,33 @@ public class PetInfoDAOImpl implements PetInfoDAO{
   public String saveInfo(PetInfo petInfo) {
     StringBuffer sb = new StringBuffer();
     sb.append(
-    "insert into pet_info( pet_num,user_id,pet_img,pet_name,pet_type,pet_gender,pet_birth,pet_yn,pet_date,pet_vac,pet_info)");
+        "insert into pet_info(pet_num, user_id, pet_img, pet_name, pet_type, pet_gender, pet_birth, pet_yn, pet_date, pet_vac, pet_info)");
     sb.append("values(");
-    sb.append("pet_info_pet_num_seq.nextval, ");
-    sb.append(":pet_img");
-    sb.append(":pet_name");
-    sb.append(":pet_type");
-    sb.append(":pet_gender");
-    sb.append(":pet_birth");
-    sb.append(":pet_yn");
-    sb.append(":pet_date");
-    sb.append(":pet_vac");
-    sb.append(":pet_info )");
+    sb.append("pet_info_pet_num_seq.nextval,");
+    sb.append(":userId,");
+    sb.append(":petImg,");
+    sb.append(":petName,");
+    sb.append(":petType,");
+    sb.append(":petGender,");
+    sb.append(":petBirth,");
+    sb.append(":petYn,");
+    sb.append(":petDate,");
+    sb.append(":petVac,");
+    sb.append(":petInfo)");
 
     SqlParameterSource param = new BeanPropertySqlParameterSource(petInfo);
     KeyHolder keyHolder = new GeneratedKeyHolder();
-    template.update(sb.toString(),param,keyHolder);
+    template.update(sb.toString(), param, keyHolder);
 
-    String key = keyHolder.getKey().toString();  // Long petNum;    // Pet ID
-    return key;
+    Long key = keyHolder.getKey().longValue();
+    return String.valueOf(key);
+
+//    insert into pet_info(user_id, pet_img, pet_name, pet_type, pet_gender, pet_birth, pet_yn, pet_date, pet_vac, pet_info)
+//    values(pet_info_pet_num_seq.nextval, :petImg, :petName, :petType, :petGender, :petBirth, :petYn, :petDate, :petVac, :petInfo)
+//    @Insert("insert into pet_info (pet_num, user_id, pet_type, pet_name, pet_birth, pet_gender, pet_yn, pet_date, pet_vac, pet_info) values (PET_INFO_SEQ.nextval, :userId, :petType, :petName, :petBirth, :petGender, :petYn, :petDate, :petVac, :petInfo)")
+//    @Options(useGeneratedKeys=true, keyProperty="petNum", keyColumn="pet_num")
+//    Long saveInfo(PetInfo petInfo);
+
   }
 
   /**
@@ -86,21 +94,29 @@ public class PetInfoDAOImpl implements PetInfoDAO{
 
     sb.append("update pet_info");
     sb.append("set");
-    sb.append("    pet_img = :pet_img ,");
-    sb.append("    pet_name = :pet_name,");
-    sb.append("    pet_type= :pet_type,");
-    sb.append("    pet_gender= :pet_gender',");
-    sb.append("    pet_birth= :pet_birth,");
-    sb.append("    pet_yn= :pet_yn ,");
-    sb.append("    pet_date= :pet_date,");
-    sb.append("    pet_vac= :pet_vac,");
-    sb.append("    pet_info= :pet_info");
+    sb.append("    pet_img = :petImg ,");
+    sb.append("    pet_name = :petName,");
+    sb.append("    pet_type= :petType,");
+    sb.append("    pet_gender= :petGender',");
+    sb.append("    pet_birth= :petBirth,");
+    sb.append("    pet_yn= :petYn ,");
+    sb.append("    pet_date= :petDate,");
+    sb.append("    pet_vac= :petVac,");
+    sb.append("    pet_info= :petInfo");
     sb.append("where user_id= :id;");
 
     SqlParameterSource param = new MapSqlParameterSource()
-        .addValue("pet_img",petInfo.getPetImg());
+        .addValue("petImg",petInfo.getPetImg())
+        .addValue("petName",petInfo.getPetName())
+        .addValue("petType",petInfo.getPetType())
+        .addValue("petGender",petInfo.getPetGender())
+        .addValue("petBirth",petInfo.getPetBirth())
+        .addValue("petYn",petInfo.getPetYn())
+        .addValue("petDate",petInfo.getPetDate())
+        .addValue("petVac",petInfo.getPetVac())
+        .addValue("petInfo",petInfo.getPetInfo());
 
-    return 0;
+    return template.update(sb.toString(),param);
   }
 
   /** 삭제
@@ -109,7 +125,8 @@ public class PetInfoDAOImpl implements PetInfoDAO{
    */
   @Override
   public int deleteInfo(Long PetNum) {
-    return 0;
+    String sql = "delete from pet_info where pet_num = :petNum";
+    return template.update(sql,Map.of("petNum",PetNum));
   }
 
   /** 목록

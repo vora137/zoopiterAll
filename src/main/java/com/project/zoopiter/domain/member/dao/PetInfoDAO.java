@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PetInfoDAO {
-  /**등록
+  /**
+   * 등록
    *
    * @param petInfo
    * @return

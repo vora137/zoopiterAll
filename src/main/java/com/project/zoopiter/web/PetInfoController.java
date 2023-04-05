@@ -20,8 +20,6 @@ public class PetInfoController {
     PetInfo petInfo = new PetInfo();
     String save = petInfoSVC.saveInfo(petInfo);
 
-
-
     return "mypage_pet_reg";
   }
   // 등록처리

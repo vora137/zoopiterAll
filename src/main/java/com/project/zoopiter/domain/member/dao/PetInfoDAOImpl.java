@@ -4,6 +4,7 @@ import com.project.zoopiter.domain.entity.PetInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -48,7 +49,7 @@ public class PetInfoDAOImpl implements PetInfoDAO{
 
     SqlParameterSource param = new BeanPropertySqlParameterSource(petInfo);
     KeyHolder keyHolder = new GeneratedKeyHolder();
-    template.update(sb.toString(), param, keyHolder);
+    template.update(sb.toString(), param, keyHolder,new String[]{"pet_num"});
 
     Long key = keyHolder.getKey().longValue();
     return String.valueOf(key);
@@ -63,19 +64,20 @@ public class PetInfoDAOImpl implements PetInfoDAO{
 
   /**
    * 조회
-   * @param memberId
+   * @param petNum
    * @return
    */
   @Override
-  public Optional<PetInfo> findInfo(Long memberId) {
+  public Optional<PetInfo> findInfo(Long petNum) {
     StringBuffer sb = new StringBuffer();
     sb.append(" select *");
     sb.append("from pet_info");
-    sb.append(" where user_id = :id");
+    sb.append(" where pet_num = :id");
 
     try{
-    Map<String,Long> param = Map.of("id",memberId);
-    PetInfo petInfo = template.queryForObject(sb.toString(),param, PetInfo.class);
+    Map<String,Long> param = Map.of("id",petNum);
+    PetInfo petInfo = template.queryForObject(sb.toString(),param,
+        BeanPropertyRowMapper.newInstance(PetInfo.class));
       return Optional.of(petInfo);
     } catch (EmptyResultDataAccessException e){
       // 조회 결과가 없을때
@@ -92,18 +94,18 @@ public class PetInfoDAOImpl implements PetInfoDAO{
   public int updateInfo(Long PetNum, PetInfo petInfo) {
     StringBuffer sb = new StringBuffer();
 
-    sb.append("update pet_info");
-    sb.append("set");
+    sb.append("update pet_info ");
+    sb.append("set ");
     sb.append("    pet_img = :petImg ,");
     sb.append("    pet_name = :petName,");
     sb.append("    pet_type= :petType,");
-    sb.append("    pet_gender= :petGender',");
+    sb.append("    pet_gender= :petGender,");
     sb.append("    pet_birth= :petBirth,");
     sb.append("    pet_yn= :petYn ,");
     sb.append("    pet_date= :petDate,");
     sb.append("    pet_vac= :petVac,");
-    sb.append("    pet_info= :petInfo");
-    sb.append("where user_id= :id;");
+    sb.append("    pet_info= :petInfo ");
+    sb.append("where pet_num = :id ");
 
     SqlParameterSource param = new MapSqlParameterSource()
         .addValue("petImg",petInfo.getPetImg())
@@ -114,10 +116,12 @@ public class PetInfoDAOImpl implements PetInfoDAO{
         .addValue("petYn",petInfo.getPetYn())
         .addValue("petDate",petInfo.getPetDate())
         .addValue("petVac",petInfo.getPetVac())
-        .addValue("petInfo",petInfo.getPetInfo());
+        .addValue("petInfo",petInfo.getPetInfo())
+        .addValue("id", PetNum);
 
     return template.update(sb.toString(),param);
   }
+
 
   /** 삭제
    * @param PetNum
@@ -134,6 +138,14 @@ public class PetInfoDAOImpl implements PetInfoDAO{
    */
   @Override
   public List<PetInfo> findAll() {
-    return null;
+    StringBuffer sb = new StringBuffer();
+    sb.append("select * ");
+    sb.append("  from pet_info");
+
+    List<PetInfo> list = template.query(
+        sb.toString(),
+        BeanPropertyRowMapper.newInstance(PetInfo.class)
+    );
+    return list;
   }
 }

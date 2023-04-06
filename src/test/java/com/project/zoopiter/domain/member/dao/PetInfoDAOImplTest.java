@@ -8,8 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @Slf4j
@@ -27,33 +31,77 @@ class PetInfoDAOImplTest {
     petInfo.setPetImg(petImg);
     petInfo.setPetType("시츄");
     petInfo.setPetName("강아지1");
-    petInfo.setPetBirth(new Timestamp(new Date(123, 3, 6).getTime()));
+    petInfo.setPetBirth(LocalDate.parse("2022-01-01"));
     petInfo.setPetGender("M");
     petInfo.setPetYn("Y");
-    petInfo.setPetDate(new Timestamp(new Date(123, 3, 6).getTime()));
+    petInfo.setPetDate(LocalDate.parse("2022-01-01"));
     petInfo.setPetVac("P0101");
     petInfo.setPetInfo("다이어트");
 
     String petNum = String.valueOf(petInfoDAO.saveInfo(petInfo));
     log.info("petNum={}", petNum);
 
-    Assertions.assertThat(petNum).isGreaterThan(String.valueOf(0L));
+    assertThat(petNum).isGreaterThan(String.valueOf(0L));
   }
 
 
   @Test
+  @DisplayName("반려동물 정보 조회")
   void findInfo() {
+    Long petNum = 1L;
+    Optional<PetInfo> petInfo = petInfoDAO.findInfo(petNum);
+    PetInfo findPetInfo = petInfo.orElseThrow();
+    Assertions.assertThat(findPetInfo.getUserId()).isEqualTo("test1");
   }
 
   @Test
+  @DisplayName("반려동물 정보 수정")
   void updateInfo() {
+    byte[] petImg = "test image".getBytes();
+
+    Long petNum = 1L;
+    PetInfo petInfo = new PetInfo();
+    petInfo.setUserId("test1");
+    petInfo.setPetImg(petImg);
+    petInfo.setPetType("시츄수정");
+    petInfo.setPetBirth(LocalDate.parse("2022-01-01"));
+    petInfo.setPetGender("M");
+    petInfo.setPetName("강아지수정2");
+    petInfo.setPetYn("Y");
+    petInfo.setPetDate(LocalDate.parse("2022-01-01"));
+    petInfo.setPetVac("P0104");
+    petInfo.setPetInfo("다이어트해야함");
+    int updateRowCount = petInfoDAO.updateInfo(petNum,petInfo);
+    Optional<PetInfo> findPetInfo = petInfoDAO.findInfo(petNum);
+
+    Assertions.assertThat(updateRowCount).isEqualTo(1);
+    Assertions.assertThat(findPetInfo.get().getPetImg()).isEqualTo(petInfo.getPetImg());
+    Assertions.assertThat(findPetInfo.get().getPetType()).isEqualTo(petInfo.getPetType());
+    Assertions.assertThat(findPetInfo.get().getPetBirth()).isEqualTo(petInfo.getPetBirth());
+    Assertions.assertThat(findPetInfo.get().getPetGender()).isEqualTo(petInfo.getPetGender());
+    Assertions.assertThat(findPetInfo.get().getPetName()).isEqualTo(petInfo.getPetName());
+    Assertions.assertThat(findPetInfo.get().getPetYn()).isEqualTo(petInfo.getPetYn());
+    Assertions.assertThat(findPetInfo.get().getPetDate()).isEqualTo(petInfo.getPetDate());
+    Assertions.assertThat(findPetInfo.get().getPetVac()).isEqualTo(petInfo.getPetVac());
+    Assertions.assertThat(findPetInfo.get().getPetInfo()).isEqualTo(petInfo.getPetInfo());
+
   }
 
   @Test
+  @DisplayName("반려동물 정보 삭제")
   void deleteInfo() {
+    Long petNum = 1L;
+    int deleteRowCount = petInfoDAO.deleteInfo(petNum);
+
+    Optional<PetInfo> findPetInfo = petInfoDAO.findInfo(petNum);
+    Assertions.assertThatThrownBy(()->findPetInfo.orElseThrow())
+        .isInstanceOf(NoSuchElementException.class);
   }
 
   @Test
+  @DisplayName("반려동물 목록")
   void findAll() {
+    List<PetInfo> list = petInfoDAO.findAll();
+    Assertions.assertThat(list.size()).isGreaterThan(0);
   }
 }

@@ -60,6 +60,6 @@ public class PetInfoController {
 //  List<PetInfo> findInfo();
   @GetMapping
   public String findAll(){
-    return "../static/html/mypage_main";
+    return "/mypage/mypage_main";
   }
 }

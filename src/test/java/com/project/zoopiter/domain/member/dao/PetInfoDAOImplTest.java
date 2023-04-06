@@ -18,7 +18,6 @@ class PetInfoDAOImplTest {
   @Autowired
   private PetInfoDAO petInfoDAO;
 
-
   @Test
   @DisplayName("반려동물 등록")
   void saveInfo() {

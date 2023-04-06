@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -14,7 +15,7 @@ public class PetInfo {
   private String userId;    // 회원 ID
   private byte[] petImg;    // 반려동물 프로필 사진
   private String petType;   //반려동물 품종
-  private Timestamp petBirth;    // 반려동물 생일
+  private LocalDateTime petBirth;    // 반려동물 생일
   private String petGender; //반려동물 성별
   private String petName; // 반려동물 이름
   private String petYn;      // 중성화 여부
